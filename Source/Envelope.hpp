@@ -23,6 +23,7 @@ class Envelope
     private:
     juce::ValueTree envelopeTree;
     int indexForTimeValue(double time);
+    double interpolateLinear(double x1, double y1, double x2, double y2, double pos);
 };
 
 #endif

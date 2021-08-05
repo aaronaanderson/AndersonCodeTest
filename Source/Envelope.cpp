@@ -20,9 +20,17 @@ void Envelope::deletePoint(int index)
 double Envelope::getValue(double time)
 {
     if(getNumberPoints() < 1)
-      return 0.5;
-
-    return 0.0;
+        return 0.5;
+    
+    int index = indexForTimeValue(time);
+    if(index < 1)
+        return envelopeTree.getChild(0)[valueID];
+    if(index >= getNumberPoints())
+        return envelopeTree.getChild(getNumberPoints()-1)[valueID];
+    
+    return interpolateLinear(envelopeTree.getChild(index-1)[timeID], envelopeTree.getChild(index-1)[valueID],
+                             envelopeTree.getChild(index)[timeID], envelopeTree.getChild(index)[valueID], 
+                             time);
 }
 int Envelope::getNumberPoints()
 {
@@ -42,4 +50,9 @@ int Envelope::indexForTimeValue(double time)
     }
     //if nothing was found, then it will given the last index
     return getNumberPoints();
+}
+double Envelope::interpolateLinear(double x1, double y1, double x2, double y2, double position)
+{
+    double scalar = (position - x1) / (x2 - x1);
+    return (y1 * (1.0 - scalar)) + (y2 * scalar);
 }

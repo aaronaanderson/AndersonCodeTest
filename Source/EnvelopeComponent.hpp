@@ -38,7 +38,7 @@ class EnvelopeComponent : public juce::Component,
     juce::OwnedArray<PointComponent> pointComponentPtrs;
 
     void mouseDown(const juce::MouseEvent&) override;
-    void mouseDrag(const juce::MouseEvent&) override;
+    void mouseMove(const juce::MouseEvent&) override;
 
     void valueTreeChildAdded (juce::ValueTree& parentTree,
                               juce::ValueTree& childWhichHasBeenAdded) override;
@@ -46,7 +46,8 @@ class EnvelopeComponent : public juce::Component,
                                 juce::ValueTree& childWhichHasBeenRemoved,
                                 int indexFromWhichChildWasRemoved) override;      
     PointComponent* getComponentForValueTree(const juce::ValueTree&);    
-    void layoutPointComponents();                    
+    void layoutPointComponents();      
+    int lastXMousePosition;              
 };
 
 #endif
