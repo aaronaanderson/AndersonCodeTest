@@ -23,7 +23,7 @@ class EnvelopeComponent : public juce::Component,
     class PointComponent : public juce::Component
     {
         public:
-        PointComponent(EnvelopeComponent& parent, juce::ValueTree branch, juce::Point<int> position);
+        PointComponent(EnvelopeComponent& parent, juce::ValueTree branch);
         void paint(juce::Graphics&) override;
         juce::ValueTree getPointBranch(){return pointBranch;}
 
@@ -35,7 +35,7 @@ class EnvelopeComponent : public juce::Component,
     void removePointComponent(PointComponent*);
 
     private:
-    juce::OwnedArray<PointComponent> pointComponentPtrs;
+    juce::OwnedArray<PointComponent> pointComponents;
 
     void mouseDown(const juce::MouseEvent&) override;
     void mouseMove(const juce::MouseEvent&) override;

@@ -1,13 +1,15 @@
 #include "EnvelopeComponent.hpp"
 #include "Envelope.hpp"
 
-EnvelopeComponent::PointComponent::PointComponent(EnvelopeComponent& parent,juce::ValueTree branch, juce::Point<int> pixelLocation)
+EnvelopeComponent::PointComponent::PointComponent(EnvelopeComponent& parent,juce::ValueTree branch)
   :  parentComponent(parent),
      pointBranch(branch)
 {
     juce::Rectangle<int> r;
     r.setSize(15, 15);
-    r.setCentre(pixelLocation);
+    juce::Point<int> position = {static_cast<float>(branch[timeID]) * parentComponent.getWidth() , 
+                                 static_cast<float>(branch[valueID]) * parentComponent.getHeight()};
+    r.setCentre(position);
     setBounds(r);
 }
 void EnvelopeComponent::PointComponent::paint(juce::Graphics& graphics) 
@@ -17,6 +19,7 @@ void EnvelopeComponent::PointComponent::paint(juce::Graphics& graphics)
 }
 void EnvelopeComponent::PointComponent::mouseDown(const juce::MouseEvent& mouseEvent)
 {
+    juce::ignoreUnused(mouseEvent);
     auto e = parentComponent.getEnvelopeRef();
     int index = parentComponent.getValueTree().indexOf(pointBranch);
     e.deletePoint(index);
@@ -95,8 +98,8 @@ void EnvelopeComponent::resized()
 
 void EnvelopeComponent::removePointComponent(EnvelopeComponent::PointComponent* p)
 {
-    int i = pointComponentPtrs.indexOf(p);
-    pointComponentPtrs.remove(i);
+    int i = pointComponents.indexOf(p);
+    pointComponents.remove(i);
     parentComponent.removeChildComponent(p);
 }
 juce::ValueTree EnvelopeComponent::getValueTree()
@@ -106,9 +109,8 @@ juce::ValueTree EnvelopeComponent::getValueTree()
 void EnvelopeComponent::valueTreeChildAdded(juce::ValueTree& parentTree,
                                             juce::ValueTree& newChildTree)
 {
-    juce::Point<int> position = {static_cast<float>(newChildTree[timeID]) * getWidth(), 
-                                 static_cast<float>(newChildTree[valueID]) * getHeight()};
-    auto c = pointComponentPtrs.add(new PointComponent(*this, newChildTree, position));
+    juce::ignoreUnused(parentTree);
+    auto c = pointComponents.add(new PointComponent(*this, newChildTree));
     addAndMakeVisible(c);
     repaint();
 }
@@ -116,13 +118,14 @@ void EnvelopeComponent::valueTreeChildRemoved (juce::ValueTree& parentTree,
                                                juce::ValueTree& childWhichHasBeenRemoved,
                                                int indexFromWhichChildWasRemoved)
 {
+    juce::ignoreUnused(parentTree);juce::ignoreUnused(indexFromWhichChildWasRemoved);
     auto c = getComponentForValueTree(childWhichHasBeenRemoved);
     removePointComponent(c);//remove self from parent list
     repaint();
 }                                            
 EnvelopeComponent::PointComponent* EnvelopeComponent::getComponentForValueTree(const juce::ValueTree& tree)
 {
-    for(auto c : pointComponentPtrs)
+    for(auto c : pointComponents)
         if(c->getPointBranch() == tree)
             return c;
 
@@ -130,10 +133,10 @@ EnvelopeComponent::PointComponent* EnvelopeComponent::getComponentForValueTree(c
 }
 void EnvelopeComponent::layoutPointComponents()
 {
-    for(auto c : pointComponentPtrs)
+    for(auto c : pointComponents)
     {
         juce::Rectangle<int> r;
-        r.setSize(12, 12);
+        r.setSize(15, 15);
         auto pointBranch = c->getPointBranch();
         r.setCentre(static_cast<float>(pointBranch[timeID]) * parentComponent.getWidth(), 
                     static_cast<float>(pointBranch[valueID]) * parentComponent.getHeight());

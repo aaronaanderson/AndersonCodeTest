@@ -8,7 +8,9 @@ MainComponent::MainComponent()
 }
 
 void MainComponent::paint (juce::Graphics& g)
-{}
+{
+    juce::ignoreUnused(g);
+}
 
 void MainComponent::resized()
 {
