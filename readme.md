@@ -1,4 +1,4 @@
-# CodeTest Readme
+# Code Test Readme
 
 ## Cloning
 
@@ -10,7 +10,7 @@ git clone --recurse-submodules https://github.com/aaronaanderson/AndersonCodeTes
 
 ## Building 
 
-This test uses a CMake build system. For default generators:
+This build uses CMake. For default generators:
 
 ```
 cd AndersonCodeTest
@@ -18,3 +18,4 @@ mkdir build
 cd build
 cmake ../
 ```
+Use cmake's output to compile, resulting in an executable named 'CodeTest_Anderson'
