@@ -17,14 +17,12 @@ public:
 
     void shutdown() override
     {
-        mainWindow = nullptr; // (deletes our window)
+        mainWindow = nullptr;
     }
-
     void systemRequestedQuit() override
     {
         quit();
     }
-
     class MainWindow    : public juce::DocumentWindow
     {
     public:

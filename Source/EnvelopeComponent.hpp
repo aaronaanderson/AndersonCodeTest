@@ -9,7 +9,8 @@ class EnvelopeComponent : public juce::Component,
 {
     public:
     EnvelopeComponent(juce::Component& parent, Envelope& envelope);
-    
+    ~EnvelopeComponent();
+
     void paint(juce::Graphics&) override;
     void resized() override;
     juce::ValueTree getValueTree();
@@ -31,7 +32,6 @@ class EnvelopeComponent : public juce::Component,
         EnvelopeComponent& parentComponent;
         juce::ValueTree pointBranch;
     };
-    public:
     void removePointComponent(PointComponent*);
 
     private:

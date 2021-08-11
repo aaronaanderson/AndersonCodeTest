@@ -8,12 +8,9 @@ MainComponent::MainComponent()
 }
 
 void MainComponent::paint (juce::Graphics& g)
-{
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-}
+{}
 
 void MainComponent::resized()
 {
-//    envelopeComponent.centreWithSize(getWidth() - 20, getHeight() - 20);
-   envelopeComponent.setBounds(getBounds());
+    envelopeComponent.setBounds(getBounds());
 }

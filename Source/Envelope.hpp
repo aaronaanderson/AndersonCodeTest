@@ -8,7 +8,6 @@ static const juce::Identifier pointID("point");
 static const juce::Identifier timeID("time");
 static const juce::Identifier valueID("value");
 
-
 class Envelope 
 {
     public:
@@ -22,7 +21,7 @@ class Envelope
         
     private:
     juce::ValueTree envelopeTree;
-    int indexForTimeValue(double time);
+    int indexForTimeValue(double time);//returns insertion index for given time
     double interpolateLinear(double x1, double y1, double x2, double y2, double pos);
 };
 

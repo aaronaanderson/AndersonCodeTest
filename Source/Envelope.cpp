@@ -39,7 +39,7 @@ int Envelope::getNumberPoints()
 int Envelope::indexForTimeValue(double time)
 {
     jassert(time >= 0.0 && time <= 1.0);
-    // Note this assumes the tree is already sorted by point time
+    // Note this strategy assumes the tree is already sorted by point time
     for(int i = 0; i < getNumberPoints(); ++i)
     {
         //which index proceeds the new point
@@ -48,7 +48,7 @@ int Envelope::indexForTimeValue(double time)
             return i;
         }
     }
-    //if nothing was found, then it will given the last index
+    //if nothing was found, then it will given the last valid index + 1
     return getNumberPoints();
 }
 double Envelope::interpolateLinear(double x1, double y1, double x2, double y2, double position)

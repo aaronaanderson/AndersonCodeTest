@@ -6,13 +6,13 @@ EnvelopeComponent::PointComponent::PointComponent(EnvelopeComponent& parent,juce
      pointBranch(branch)
 {
     juce::Rectangle<int> r;
-    r.setSize(20, 20);
+    r.setSize(15, 15);
     r.setCentre(pixelLocation);
     setBounds(r);
 }
 void EnvelopeComponent::PointComponent::paint(juce::Graphics& graphics) 
 {
-    graphics.setColour(juce::Colours::darkorange);
+    graphics.setColour(juce::Colour::fromRGB(75, 75, 75));
     graphics.fillEllipse(0, 0, getWidth(), getHeight());
 }
 void EnvelopeComponent::PointComponent::mouseDown(const juce::MouseEvent& mouseEvent)
@@ -21,7 +21,7 @@ void EnvelopeComponent::PointComponent::mouseDown(const juce::MouseEvent& mouseE
     int index = parentComponent.getValueTree().indexOf(pointBranch);
     e.deletePoint(index);
 }
-
+//================================================================================
 EnvelopeComponent::EnvelopeComponent(juce::Component& parent, Envelope& envelope)
   :  parentComponent(parent), 
      envelopeReference(envelope)
@@ -29,7 +29,10 @@ EnvelopeComponent::EnvelopeComponent(juce::Component& parent, Envelope& envelope
     envelopeReference.getValueTree().addListener(this);
     setVisible(true);
 }
-
+EnvelopeComponent::~EnvelopeComponent()
+{
+    envelopeReference.getValueTree().removeListener(this);
+}
 void EnvelopeComponent::mouseDown(const juce::MouseEvent& mouseEvent)
 {
     envelopeReference.addPoint(mouseEvent.x * normalizationScalar.x, 
@@ -37,14 +40,14 @@ void EnvelopeComponent::mouseDown(const juce::MouseEvent& mouseEvent)
 }
 
 void EnvelopeComponent::mouseMove(const juce::MouseEvent& mouseEvent)
-{
+{   //used only to position
     lastXMousePosition = mouseEvent.getPosition().getX();
     repaint();
 }
 void EnvelopeComponent::paint(juce::Graphics& graphics)
 {
-    graphics.fillAll (juce::Colours::aqua);
-    graphics.setColour(juce::Colours::darkolivegreen);
+    graphics.fillAll (juce::Colour::fromRGB(160, 160, 160));
+    graphics.setColour(juce::Colour::fromRGB(0, 0, 0));
     juce::Point<float> previousPoint;
     if(envelopeReference.getNumberPoints() < 1)
     {
@@ -62,10 +65,11 @@ void EnvelopeComponent::paint(juce::Graphics& graphics)
             }
             previousPoint = p;
         }
+        //draw edge-case lines
         auto pointBranch = envelopeReference.getValueTree().getChild(0);
         juce::Point<float> p = {static_cast<float>(pointBranch[timeID]) * getWidth(), 
                                 static_cast<float>(pointBranch[valueID]) * getHeight()};
-        //draw edge lines
+        
         graphics.drawLine(0.0f, p.getY(), p.getX(), p.getY());
 
         int lastChildIndex = envelopeReference.getValueTree().getNumChildren() - 1;
@@ -74,10 +78,11 @@ void EnvelopeComponent::paint(juce::Graphics& graphics)
              static_cast<float>(pointBranch[valueID]) * getHeight()};
         graphics.drawLine(p.getX(), p.getY(), getWidth(), p.getY());
     }    
+    //Small rec circle to show .getValue() accuracy
     juce::Rectangle<float> r;
-    r.setCentre(lastXMousePosition - 10, 
-                envelopeReference.getValue(lastXMousePosition * normalizationScalar.getX()) * getHeight() - 10);
-    r.setSize(20, 20);
+    r.setCentre(lastXMousePosition - 5, 
+                envelopeReference.getValue(lastXMousePosition * normalizationScalar.getX()) * getHeight() - 5);
+    r.setSize(10, 10);
     graphics.setColour(juce::Colours::red);
     graphics.fillEllipse(r);
 }
@@ -128,7 +133,7 @@ void EnvelopeComponent::layoutPointComponents()
     for(auto c : pointComponentPtrs)
     {
         juce::Rectangle<int> r;
-        r.setSize(20, 20);
+        r.setSize(12, 12);
         auto pointBranch = c->getPointBranch();
         r.setCentre(static_cast<float>(pointBranch[timeID]) * parentComponent.getWidth(), 
                     static_cast<float>(pointBranch[valueID]) * parentComponent.getHeight());
